@@ -1,104 +1,141 @@
 # A22 Guiding Principles
 
-A22 is built on a small set of principles that ensure the language remains clear, composable, and durable. These principles guide both the design of the specification and the evolution of the ecosystem around it.
+A22 orchestrates agentic systems from natural language.
+
+These principles guide everything we build.
 
 ---
 
 ## 1. Clarity Over Abstraction
 
-Every construct in A22 must be immediately interpretable.
+Every line of A22 should be immediately understandable.
 
-The language favors explicitness and readability over abstraction layers or clever patterns.
+We favor explicitness over cleverness.
+We favor natural language over symbols.
+We favor intent over mechanics.
 
-**If something is unclear, it is redesigned.**
+**If someone has to guess, we failed.**
 
 ---
 
 ## 2. Intent Before Mechanics
 
-A22 models **what** the system is meant to accomplish, not **how** it will be executed.
+A22 describes **what** a system does, not **how** it runs.
 
-Execution details belong to runtimes; intent belongs to the language.
+```a22
+agent "assistant"
+    knows how to chat
+    listens to message.received
+    speaks message.reply
+```
+
+The runtime figures out execution.
+You describe intent.
 
 ---
 
 ## 3. Minimalism as Power
 
-The language includes only the primitives required for agentic systems—nothing more.
+A22 has exactly **two constructs**: `system` and `agent`.
 
-Features are added only when they reduce complexity at scale.
+Everything else emerges from event relationships.
 
-**A22 grows by subtraction, not accumulation.**
+**We grow by subtraction, not accumulation.**
 
 ---
 
 ## 4. Uniformity Across Constructs
 
-Every block in A22 follows the same structural rules: named, scoped, explicit, and declarative.
+Every block follows the same rules:
+- Named
+- Scoped
+- Declarative
+- Natural language
 
-When two constructs look similar, they behave similarly.
-
+When two things look similar, they behave similarly.
 When they differ, the difference is intentional.
 
 ---
 
 ## 5. Predictability Without Exceptions
 
-There should be no "special cases" in the language.
+No special cases.
+No hidden rules.
+No context-dependent magic.
 
-The meaning of a construct must not change based on hidden rules or context-specific magic.
+```a22
+when message.received
+    the system should eventually speak support.complete
+```
 
-**Predictability ensures trust.**
+This means exactly what it says. Always.
 
 ---
 
-## 6. Data Is Immutable Context
+## 6. Everything Is Temporal
 
-All data flows in one direction—forward.
+The unit of truth is **an event happening in time**.
 
-State transitions create new context snapshots rather than modify existing ones.
-
-This makes reasoning deterministic and debugging transparent.
+History grows forward.
+Nothing mutates.
+State is computed, not stored.
 
 ---
 
 ## 7. Composition Over Control Flow
 
-A22 models systems as composable relationships, not as procedural instructions.
+Systems are built by composing relationships, not scripting procedures.
 
-A system is built by composing agents, contexts, tools, and flows—not by scripting control logic.
+```a22
+agent "assistant"
+    listens to message.received
+    speaks retrieval.request
 
-Composition reduces cognitive load and improves maintainability.
+agent "retriever"
+    listens to retrieval.request
+    speaks retrieval.done
+
+agent "assistant"
+    listens to retrieval.done
+    speaks answer.generated
+```
+
+No orchestration code. The flow emerges.
 
 ---
 
 ## 8. Human-Readable, Machine-Rigid
 
-A22 must be pleasant to read and strict to parse.
+A22 reads like structured thought.
 
-Whitespace, block structure, and naming conventions exist to serve both humans and machines.
+Non-technical people can understand what a system does.
+Machines can parse it without ambiguity.
 
-**Readable by anyone, reliable for everyone.**
+**Readable by anyone. Reliable for everyone.**
 
 ---
 
 ## 9. Runtime Agnostic by Design
 
-A22 programs must execute identically across runtimes.
+A22 programs execute identically across runtimes.
 
-The language specification defines behavior; runtimes implement it faithfully.
+The specification defines behavior.
+Runtimes implement it faithfully.
 
-Portability ensures longevity.
+This ensures portability and longevity.
 
 ---
 
 ## 10. Stability With Space to Evolve
 
-The core primitives of A22 should remain stable over time.
+Core primitives remain stable.
 
-Evolution happens through extensions, proposals, and optional capabilities—not breaking changes.
+Evolution happens through:
+- Extensions (opt-in)
+- Proposals (community-driven)
+- Capabilities (runtime-specific)
 
-**Stability enables a healthy ecosystem.**
+**Not breaking changes.**
 
 ---
 
@@ -106,47 +143,116 @@ Evolution happens through extensions, proposals, and optional capabilities—not
 
 A22 avoids implicit behavior.
 
-Every dependency, transformation, and flow relationship should be declared.
+```a22
+agent "assistant"
+    knows how to chat
+    is not allowed to execute_code
+    listens to message.received
+    looks at message.* history
+    interprets intent from message.* history
+```
 
-**If the reader must guess, the language has failed.**
+Every dependency is declared.
+Every capability is explicit.
+Every relationship is visible.
 
 ---
 
 ## 12. Systems as First-Class Concepts
 
-A22 treats agentic systems as structured, long-lived artifacts.
+Agentic systems are structured, long-lived artifacts.
 
-The language emphasizes:
-- Declarative architecture
-- Explicit capabilities
-- Predictable data evolution
-- Repeatable behavior
+They should feel **designed, not improvised**.
 
-**Systems should feel designed, not improvised.**
+```a22
+system "support"
+    description: "customer support system"
+    ensures "all messages receive replies within 5 minutes"
+
+agent "assistant"
+    knows how to chat
+    listens to message.received
+    speaks message.reply
+
+when message.received
+    the system should eventually speak support.complete
+```
+
+Architecture is explicit.
+Guarantees are enforced.
+Behavior is predictable.
 
 ---
 
 ## In Practice
 
-These principles manifest in concrete design decisions:
+These principles manifest in concrete design:
 
-- **Clarity**: Keywords like `can`, `use`, `when` make intent explicit
-- **Intent**: Workflows describe dataflow, not execution order
-- **Minimalism**: Only five primitives (Event, Context, Agent, Workflow, Tool)
-- **Uniformity**: All blocks use the same indentation-based structure
-- **Predictability**: Same context + same input = same output, always
-- **Immutability**: Append-only events, never mutate
-- **Composition**: Agents compose into workflows, workflows compose into systems
-- **Human-Readable**: Natural language syntax (`agent "name" can chat, search`)
-- **Runtime Agnostic**: Specification defines behavior, not implementation
-- **Stability**: v1.0 specification is stable, extensions are opt-in
-- **Transparent**: All dependencies, capabilities, and flows are declared
-- **Systems-First**: Define the architecture, not just the code
+### Clarity
+Keywords like `knows how to`, `listens to`, `speaks` — reads like English.
+
+### Intent
+Describe what agents do, not how they execute.
+
+### Minimalism
+Only `system` and `agent`. Everything else emerges.
+
+### Uniformity
+All blocks use indentation-based natural language structure.
+
+### Predictability
+Same events + same histories = same outputs. Always.
+
+### Temporal
+Events flow forward in time. Append-only. Immutable.
+
+### Composition
+Agents compose through event subscriptions, not orchestration.
+
+### Human-Readable
+Natural language syntax flows like thought.
+
+### Runtime Agnostic
+Specification defines behavior. Implementations vary.
+
+### Stability
+v3.0 primitives are stable. Extensions are opt-in.
+
+### Transparent
+All relationships declared. No implicit behavior.
+
+### Systems-First
+Define architecture, guarantees, and constraints.
 
 ---
 
-## Evolution of Principles
+## Evolution
 
-These principles may be refined over time through the **A22 Improvement Proposal (AIP)** process, but they serve as the foundation for all design decisions in A22.
+These principles may evolve through the **A22 Improvement Proposal (AIP)** process.
 
-Any proposed change to the language must align with these principles, or demonstrate why a principle itself needs refinement.
+But they are the foundation.
+
+Any proposed change must:
+1. Align with these principles
+2. Or demonstrate why a principle needs refinement
+
+---
+
+## Why These Principles Matter
+
+**Clarity** ensures adoption.
+**Intent** enables portability.
+**Minimalism** reduces cognitive load.
+**Uniformity** makes learning instant.
+**Predictability** builds trust.
+**Temporality** enables reasoning.
+**Composition** scales naturally.
+**Human-readability** democratizes AI.
+**Runtime agnosticism** ensures longevity.
+**Stability** enables ecosystems.
+**Transparency** prevents surprises.
+**Systems-first** thinking builds quality.
+
+---
+
+**A22** — Orchestrate agentic systems from natural language
